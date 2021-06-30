@@ -21,7 +21,7 @@
 		<spring.version>5.1.2.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 		<log4j.version>1.2.17</log4j.version>
-		<sonar.host.url>http://3.92.87.83:9000/</sonar.host.url>
+		<sonar.host.url>http://3.236.193.157:9000/</sonar.host.url>
                 <sonar.login>admin</sonar.login>
 		<sonar.password>admin</sonar.password>  
               
@@ -99,13 +99,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Releases Nexus Repository</name>
-	      <url>http://3.238.192.205:8081/repository/GSAPP_RELEASE/</url>
+	      <url>http://3.221.149.97:8081/repository/Braclays_DEVop/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>Mithun Technologies Snapshot Nexus Repository </name>
-	      <url>http://3.238.192.205:8081/repository/GSAPP_SNAPSHOT/</url>
+	      <url>http://3.221.149.97:8081/repository/Barclays_DEVOP_Snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
