@@ -1,29 +1,43 @@
-node {
-    def mavenHome =tool name: "maven3.6.3"
-    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '9', artifactNumToKeepStr: '10', daysToKeepStr: '8', numToKeepStr: '7')), pipelineTriggers([cron('* 2 * * *'), pollSCM('* * * * *')])])
-    
-    stage ('code checkouts'){
-        git branch: 'development', credentialsId: '6040bc88-2344-459e-b795-b4945bb0090f', url: 'https://github.com/gsdevopscloud/maven-web-application.git'
-        
+pipeline{
+    agent any
+    triggers{
+        pollSCM('* * * * *')
     }
-    
-    stage ('Build'){
-        sh "${mavenHome}/bin/mvn clean package"
+    options{
+        timestamps()
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '6', numToKeepStr: '7'))
     }
-    stage ('ExcuteSonarQubeReport'){
-        sh "${mavenHome}/bin/mvn sonar:sonar"
+    tools{
+       maven  "maven3.6.3"
     }
-    stage ('UploadArctifactIntoNexus'){
-        sh "${mavenHome}/bin/mvn clean deploy"
+    stages{ 
+    stage('Checkoutcode'){
+        steps{
+	    git branch: 'development', credentialsId: '6040bc88-2344-459e-b795-b4945bb0090f', url: 'https://github.com/gsdevopscloud/maven-web-application.git'
+        }
     }
-    stage ('deployapplicationIntoTomcat'){
-        sshagent(['fa1d007a-6594-452c-83cd-b10149013e35']) {
-       sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.228.218.223:/opt/apache-tomcat-9.0.48/webapps/"
+     stage ('Build'){
+     steps{
+      sh "mvn clean package"
+     }
+	}
+	 stage ('ExcuteSonarQubeReport'){
+	 steps{
+	 sh "mvn clean sonar:sonar"
+   	 }
+	}
+     
+    }//stage closing
+    post{
+        success{
+            emailext body: '''BUILD IS OVER -success
+           Thanks,
+           Krishna.''', subject: 'BUILD IS OVER', to: 'krishnakrishh0@gmail.com'
+        }
+        failure{
+            emailext body: '''BUILD IS OVER -failed
+           Thanks,
+           Krishna.''', subject: 'BUILD IS OVER', to: 'krishnakrishh0@gmail.com'
+        }
+      }
     }
-    }
-    stage ('SendEmail Notification'){
-        emailext body: '''Thanks,
-        Krishna.''', subject: 'DEV-Project', to: 'krishnakrishh0@gmail.com'
-    }
-    }
-    
